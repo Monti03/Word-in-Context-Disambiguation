@@ -1,5 +1,11 @@
-# NLP-2021: First Homework
-This is the first homework of the NLP 2021 course at Sapienza University of Rome.
+# Word-in-Context Disambiguation
+Word-in-Context Disambiguation is the task of addressing the disambiguation of polysemous words, without relying on a fixed inventory of word senses. In this report I am going to propose a model based on a LSTM to solve this problem.
+
+## Approach
+The model that I am proposing takes as input the two sentences (stored as tensors of indexes) that are associated to the two sequences of embeddings relative to the terms inside the phrases through an Embedding layer. The two sequences of embeddings pass through the same BiLSTM (one sentence per time). From the output of the BiLSTM we take the tensor relative to the target term `term_i` (where `i` is `1` or `2` representing the sentence), the forward output of the last term `last_i` and the backward output of the first term `first_i`. After doing this for both the sentences we have to aggregate the results: since I wanted a network whose result is independent from the order of the sentences to compare I decided to do the following: I concatenate `abs(term_1 − term_2)`, `abs(first_1−first_2)`, `abs(last_1−last_2)`, `cossim(term_1, term_2)`, `cossim(first_1, first_2)`, `cossim(last_1,last_2)`, where `abs(x − y)` is the tensor equal to the difference of x and y where each element is chosen in its absolute value and `cossim(x,y)` is the cosine similarity of the two tensors. This concatenation than is passed through two fully connected layers. The model can be seen in the image below.
+
+![image](https://user-images.githubusercontent.com/38753416/149948762-4815dc06-5b4d-4682-b317-d838dc9ceead.png)
+
 
 #### Instructor
 * **Roberto Navigli**
